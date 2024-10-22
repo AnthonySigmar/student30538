@@ -120,7 +120,7 @@ alt.Chart(penguins).transform_density(
 
 
 
-# Two categorical variables
+# Two categorical variables 分类
 
 ## Question: How is cut related to color? 2 categorical vars
 ```{python}
@@ -133,7 +133,7 @@ diamonds_grouped
 
 ## Question: How is cut related to color? 2 categorical vars
 ```{python}
-alt.Chart(diamonds_grouped).mark_circle().encode(
+alt.Chart(diamonds_grouped).mark_circle().encode(  # dot sizes
     x = 'color:N',
     y = 'cut:N',
     size='N:Q')
@@ -141,7 +141,7 @@ alt.Chart(diamonds_grouped).mark_circle().encode(
 
 ## Question: How is cut related to color? 2 categorical vars
 ```{python}
-alt.Chart(diamonds_grouped).mark_rect().encode(
+alt.Chart(diamonds_grouped).mark_rect().encode(  # color
     x = 'color:N',
     y = 'cut:N',
     color='N:Q')
@@ -151,7 +151,7 @@ Discussion question: what diamond types are most common?
 
 
 
-# Two continuous variables
+# Two continuous variables 连续
 
 ## Two continuous variables: roadmap
 
@@ -184,20 +184,20 @@ Suffers from overplotting!
 
 ## use `alt.Size('count()')` to address overplotting
 ```{python}
-xy_size = alt.Chart(movies_url).mark_circle().encode(
+xy_size = alt.Chart(movies_url).mark_circle().encode(  # scatter plot
     alt.X('Rotten_Tomatoes_Rating:Q', bin=alt.BinParams(maxbins=20)),
     alt.Y('IMDB_Rating:Q', bin=alt.BinParams(maxbins=20)),
-    alt.Size('count()')
+    alt.Size('count()')  # add size
 )
 xy_size
 ```
 
 ## use `alt.Color('count()')` to address overplotting
 ```{python}
-xy_color = alt.Chart(movies_url).mark_bar().encode(
+xy_color = alt.Chart(movies_url).mark_bar().encode(  # bar plot
     alt.X('Rotten_Tomatoes_Rating:Q', bin=alt.BinParams(maxbins=20)),
     alt.Y('IMDB_Rating:Q', bin=alt.BinParams(maxbins=20)),
-    alt.Color('count()')
+    alt.Color('count()')  # add color
 ) 
 xy_color
 ```
@@ -217,7 +217,7 @@ Compare the *size* and *color*-based 2D histograms above. Which encoding do you 
 alt.Chart(diamonds).mark_point().encode(
     x = 'carat:Q',
     y = 'price:Q'
-)
+)  # draw every points
 ```
 
 ## Question: How is carat related to price? 2 continuous vars
@@ -264,10 +264,9 @@ Review the `mark_rect()`, `mark_boxplot()`, and `binscatter` plots
 * headline? (aka the main message)
 * sub-messages? (other information one can learn beyond the main message)
 
+qcut: quantile cut
 
-## Summary: Exploring covariation
-
-
+## Summary: Exploring covariation !!!
 
 | Scenario | Functions |
 | ------- | --------- |
@@ -289,7 +288,21 @@ Review the `mark_rect()`, `mark_boxplot()`, and `binscatter` plots
 
 We are now going to transition from making plots to teach **ourselves** to making plots for an audience.
 
-Are penguins getting heavier (`body_mass_g`) over time? 
+Are penguins getting heavier (`body_mass_g`) over time?
+
+```{python}
+# penguins = data.penguins()
+
+chart = alt.Chart(penguins).mark_bar().encode(
+    x='year:N',
+    y='average(body_mass_g):Q',
+    color='year:N'
+)
+
+chart
+
+```
+
 
 Bonus: what is the headline of your plot and what are the sub-messages?
 
