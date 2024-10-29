@@ -43,7 +43,11 @@ alt.data_transformers.disable_max_rows() # Needed because len(df) > 5000
 
 <!-- source: Lecture 5, slides 45-65)-->
 
-
+# Roadmap 
+Explore penguin `color` (continuous) vs. `cut` (categorical)
+* boxplot by category
+* densities by category
+(no summary at the end of this section)
 
 ```{python}
 from palmerpenguins import load_penguins
@@ -52,11 +56,11 @@ display(penguins)
 ```
 
 
-## numeric & categorical: box plot
+## continuous & categorical: box plot
 
 ![](pictures/EDA-boxplot.png)
 
-## numeric & categorical: `mark_boxplot()` 
+## continuous & categorical: `mark_boxplot()` 
 ```{python}
 alt.Chart(penguins).mark_boxplot().encode(
     x=alt.X('species:N', title="Species"), 
@@ -69,7 +73,7 @@ alt.Chart(penguins).mark_boxplot().encode(
 Discussion question: what do you notice from this graph? 
 
 
-## numeric & categorical: `transform_density()` 
+## continuous & categorical: `transform_density()` 
 ```{python}
 alt.Chart(penguins).transform_density(
     'body_mass_g',
@@ -83,7 +87,7 @@ alt.Chart(penguins).transform_density(
 ```
 
 
-## numeric & categorical: `transform_density()` 
+## continuous & categorical: `transform_density()` 
 
 Discussion q -- What if we required the x-axis range to include zero? Would that improve or reduce clarity? How come? 
 ```{python}
@@ -100,9 +104,7 @@ alt.Chart(penguins).transform_density(
 
 
 
-
-
-## numeric & categorical: `transform_density()` filled in
+## continuous & categorical: `transform_density()` filled in
 
 `opacity=0.3` makes no difference in content; maybe a bit more elegant
 ```{python}
@@ -120,9 +122,12 @@ alt.Chart(penguins).transform_density(
 
 
 
-# Two categorical variables 分类
+# Two categorical variables
+# Roadmap 
+* Exploring `diamonds` (`color` v `price`) with a table
+* Plots: weighting by size vs. by color
 
-## Question: How is cut related to color? 2 categorical vars
+## Question: In `diamonds`, how is cut related to color? 2 categorical vars
 ```{python}
 #| warning: false
 diamonds_grouped = diamonds.groupby(['color','cut']).size().reset_index().rename(columns={0:'N'})
@@ -133,7 +138,7 @@ diamonds_grouped
 
 ## Question: How is cut related to color? 2 categorical vars
 ```{python}
-alt.Chart(diamonds_grouped).mark_circle().encode(  # dot sizes
+alt.Chart(diamonds_grouped).mark_circle().encode(
     x = 'color:N',
     y = 'cut:N',
     size='N:Q')
@@ -141,17 +146,15 @@ alt.Chart(diamonds_grouped).mark_circle().encode(  # dot sizes
 
 ## Question: How is cut related to color? 2 categorical vars
 ```{python}
-alt.Chart(diamonds_grouped).mark_rect().encode(  # color
+alt.Chart(diamonds_grouped).mark_rect().encode(
     x = 'color:N',
     y = 'cut:N',
     color='N:Q')
 ```
 
-Discussion question: what diamond types are most common?
+Discussion question: can you describe what the distribution of diamonds across different cuts looks like? What about across different colors?
 
-
-
-# Two continuous variables 连续
+# Two continuous variables
 
 ## Two continuous variables: roadmap
 
@@ -179,25 +182,25 @@ alt.Chart(movies_url).mark_circle().encode(
     alt.Y('IMDB_Rating:Q', bin=alt.BinParams(maxbins=20)),
 )
 ```
-Suffers from overplotting!
+Suffers from overplotting, but also is not very informative!
 
 
 ## use `alt.Size('count()')` to address overplotting
 ```{python}
-xy_size = alt.Chart(movies_url).mark_circle().encode(  # scatter plot
+xy_size = alt.Chart(movies_url).mark_circle().encode(
     alt.X('Rotten_Tomatoes_Rating:Q', bin=alt.BinParams(maxbins=20)),
     alt.Y('IMDB_Rating:Q', bin=alt.BinParams(maxbins=20)),
-    alt.Size('count()')  # add size
+    alt.Size('count()')
 )
 xy_size
 ```
 
 ## use `alt.Color('count()')` to address overplotting
 ```{python}
-xy_color = alt.Chart(movies_url).mark_bar().encode(  # bar plot
+xy_color = alt.Chart(movies_url).mark_bar().encode(
     alt.X('Rotten_Tomatoes_Rating:Q', bin=alt.BinParams(maxbins=20)),
     alt.Y('IMDB_Rating:Q', bin=alt.BinParams(maxbins=20)),
-    alt.Color('count()')  # add color
+    alt.Color('count()')
 ) 
 xy_color
 ```
@@ -211,16 +214,24 @@ xy_size | xy_color
 Compare the *size* and *color*-based 2D histograms above. Which encoding do you think should be preferred? Why?
 
 
-
 ## Question: How is carat related to price? 2 continuous vars
 ```{python}
 alt.Chart(diamonds).mark_point().encode(
     x = 'carat:Q',
     y = 'price:Q'
-)  # draw every points
+)
 ```
 
-## Question: How is carat related to price? 2 continuous vars
+Let's consider 3 ways to represent this relationship. 
+
+Discussion: for each one, what is the
+* headline? (aka the main message)
+* sub-messages? (other information one can learn beyond the main message)
+
+
+
+
+## Rectangle plot + color
 ```{python}
 alt.Chart(diamonds).mark_rect().encode(
     alt.X('carat:Q', bin=alt.Bin(maxbins=70)), 
@@ -228,7 +239,7 @@ alt.Chart(diamonds).mark_rect().encode(
     alt.Color('count()', scale=alt.Scale(scheme='blues')))
 ```
 
-## Question: How is carat related to price? 2 continuous vars
+## Box plot
 ```{python}
 alt.Chart(diamonds).mark_boxplot().encode(
     alt.X('carat:Q', bin=alt.Bin(maxbins=10)), 
@@ -257,16 +268,9 @@ alt.Chart(df).mark_point().encode(
     
 * Called `binscatter` in stata and `binsreg` in R. Doesn't exist yet for Altair, but easy to code up yourself
 
-## Discussion question -- "How is carat related to price?" 
+## Summary: Exploring covariation
 
-Review the `mark_rect()`, `mark_boxplot()`, and `binscatter` plots
 
-* headline? (aka the main message)
-* sub-messages? (other information one can learn beyond the main message)
-
-qcut: quantile cut
-
-## Summary: Exploring covariation !!!
 
 | Scenario | Functions |
 | ------- | --------- |
@@ -288,21 +292,7 @@ qcut: quantile cut
 
 We are now going to transition from making plots to teach **ourselves** to making plots for an audience.
 
-Are penguins getting heavier (`body_mass_g`) over time?
-
-```{python}
-# penguins = data.penguins()
-
-chart = alt.Chart(penguins).mark_bar().encode(
-    x='year:N',
-    y='average(body_mass_g):Q',
-    color='year:N'
-)
-
-chart
-
-```
-
+Are penguins getting heavier (`body_mass_g`) over time? 
 
 Bonus: what is the headline of your plot and what are the sub-messages?
 
@@ -317,7 +307,7 @@ alt.Chart(penguins).mark_bar().encode(
 )
 ```
 
-This does answers the question, albeit in the most simple/boring way possible.
+This does answers the question, albeit in the most simple (maybe boring?) way possible. Also, two of the encodings are redundant!
 
 ## Do-pair-share solution II
 ```{python}
