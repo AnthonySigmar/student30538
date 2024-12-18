@@ -1,13 +1,20 @@
 ---
 title: "Mini-Lesson 6: Lambda Functions"
 author: "Vitor Silveira"
-format:
-  revealjs:
-    slide-number: true
-    chalkboard: false 
-    preview-links: auto
-    footer: "Lambda Functions"
-    css: styles.css
+format: 
+  pdf:
+    include-in-header: 
+       text: |
+         \usepackage{fvextra}
+         \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+include-before-body:
+  text: |
+    \RecustomVerbatimEnvironment{verbatim}{Verbatim}{
+      showspaces = false,
+      showtabs = false,
+      breaksymbolleft={},
+      breaklines
+    }
 execute:
   eval: true
   echo: true
